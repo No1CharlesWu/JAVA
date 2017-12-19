@@ -27,7 +27,9 @@ class NotifyAgent(object):
             # 创建一个socket:
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             # 监听端口:
-            self.socket.bind(('127.0.0.1', 9999))
+            # self.socket.bind(('127.0.0.1', 9999))
+            # self.socket.bind(('10.70.3.30', 9999))
+            self.socket.bind(('106.14.193.60', 9999))
             self.socket.listen(10)
             print('Waiting for connection...')
             while True:
