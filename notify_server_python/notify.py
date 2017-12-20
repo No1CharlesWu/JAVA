@@ -29,6 +29,7 @@ class NotifyAgent(object):
             # 监听端口:
             # self.socket.bind(('127.0.0.1', 9999))
             # self.socket.bind(('10.70.3.30', 9999))
+            
             self.socket.bind(('0.0.0.0', 9999))
             self.socket.listen(10)
             print('Waiting for connection...')
