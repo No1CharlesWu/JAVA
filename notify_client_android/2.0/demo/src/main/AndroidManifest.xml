@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="me.charles.sample"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+    <application
+        android:name="me.charles.sample.App"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme.NoActionBar">
+
+        <activity
+            android:name="me.charles.sample.demo_flow.MainActivity"
+            android:launchMode="singleTask"/>
+
+        <activity
+            android:name="me.charles.sample.notify.MainActivity"
+            android:launchMode="singleTask">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+            <category android:name="android.intent.category.LAUNCHER"/>
+        </intent-filter>
+        </activity>
+
+
+        <receiver android:name="me.charles.sample.notify.net.AlertReceiver">
+            <intent-filter>
+                <action android:name="CLOCK"/>
+            </intent-filter>
+        </receiver>
+
+        <service android:name="me.charles.sample.notify.net.AlertService"
+            android:enabled="true" />
+
+    </application>
+
+</manifest>
