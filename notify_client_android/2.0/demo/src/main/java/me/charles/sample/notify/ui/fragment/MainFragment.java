@@ -12,7 +12,8 @@ import me.charles.sample.R;
 import me.charles.sample.notify.event.TabSelectedEvent;
 import me.charles.sample.notify.ui.fragment.first.FirstTabFragment;
 import me.charles.sample.notify.ui.fragment.second.SecondTabFragment;
-import me.charles.sample.notify.ui.fragment.setting.SettingFragment;
+import me.charles.sample.notify.ui.fragment.third.PersonalSettingFragment;
+import me.charles.sample.notify.ui.fragment.third.ThirdTabFragment;
 import me.charles.sample.notify.ui.view.BottomBar;
 import me.charles.sample.notify.ui.view.BottomBarTab;
 
@@ -54,7 +55,7 @@ public class MainFragment extends SupportFragment {
         if (firstFragment == null) {
             mFragments[FIRST] = FirstTabFragment.newInstance();
             mFragments[SECOND] = SecondTabFragment.newInstance();
-            mFragments[THIRD] = SettingFragment.newInstance();
+            mFragments[THIRD] = PersonalSettingFragment.newInstance();
 
             loadMultipleRootFragment(R.id.fl_tab_container, FIRST,
                     mFragments[FIRST],
@@ -66,7 +67,7 @@ public class MainFragment extends SupportFragment {
             // 这里我们需要拿到mFragments的引用
             mFragments[FIRST] = firstFragment;
             mFragments[SECOND] = findChildFragment(SecondTabFragment.class);
-            mFragments[THIRD] = findChildFragment(SettingFragment.class);
+            mFragments[THIRD] = findChildFragment(PersonalSettingFragment.class);
         }
     }
 
@@ -76,7 +77,7 @@ public class MainFragment extends SupportFragment {
         mBottomBar
                 .addItem(new BottomBarTab(_mActivity, R.drawable.ic_message_white_24dp, getString(R.string.message_history)))
                 .addItem(new BottomBarTab(_mActivity, R.drawable.ic_account_circle_white_24dp, getString(R.string.send_message)))
-                .addItem(new BottomBarTab(_mActivity, R.drawable.ic_discover_white_24dp, getString(R.string.more)));
+                .addItem(new BottomBarTab(_mActivity, R.drawable.ic_discover_white_24dp, getString(R.string.settings)));
 
         // 模拟未读消息
         //TODO: 这是只是个模拟，待修改

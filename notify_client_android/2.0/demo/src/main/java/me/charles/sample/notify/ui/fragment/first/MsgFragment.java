@@ -16,6 +16,7 @@ import android.widget.EditText;
 import me.charles.sample.R;
 import me.charles.sample.notify.adapter.MsgAdapter;
 import me.charles.sample.notify.base.BaseBackFragment;
+import me.charles.sample.notify.entity.HistoryMsg;
 import me.charles.sample.notify.entity.Msg;
 import me.charles.sample.notify.entity.Ticker;
 
@@ -30,10 +31,10 @@ public class MsgFragment extends BaseBackFragment {
     private EditText mEtSend;
     private Button mBtnSend;
 
-    private Ticker mTicker;
+    private HistoryMsg mHistoryMsg;
     private MsgAdapter mAdapter;
 
-    public static MsgFragment newInstance(Ticker msg) {
+    public static MsgFragment newInstance(HistoryMsg msg) {
 
         Bundle args = new Bundle();
         args.putParcelable(ARG_MSG, msg);
@@ -45,7 +46,7 @@ public class MsgFragment extends BaseBackFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mTicker = getArguments().getParcelable(ARG_MSG);
+        mHistoryMsg = getArguments().getParcelable(ARG_MSG);
     }
 
     @Nullable
@@ -62,7 +63,7 @@ public class MsgFragment extends BaseBackFragment {
         mEtSend = (EditText) view.findViewById(R.id.et_send);
         mRecy = (RecyclerView) view.findViewById(R.id.recy);
 
-        mToolbar.setTitle(mTicker.ticker_name);
+        mToolbar.setTitle(mHistoryMsg.grade);
         initToolbarNav(mToolbar);
     }
 
@@ -90,7 +91,7 @@ public class MsgFragment extends BaseBackFragment {
             }
         });
 
-        mAdapter.addMsg(new Msg(mTicker.ticker_name));
+        mAdapter.addMsg(new Msg(mHistoryMsg.details));
     }
 
     @Override

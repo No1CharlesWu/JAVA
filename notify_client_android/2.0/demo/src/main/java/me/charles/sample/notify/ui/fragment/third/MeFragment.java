@@ -1,4 +1,4 @@
-package me.charles.sample.notify.ui.fragment.setting;
+package me.charles.sample.notify.ui.fragment.third;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,9 +18,6 @@ import me.charles.sample.notify.ui.fragment.MainFragment;
 
 public class MeFragment extends SupportFragment{
     private TextView mTvBtnSettings;
-    private TextView mTvBtnSingle_market_alert;
-    private TextView mTvBtnMarket_spread_alert;
-    private TextView mTvBtnAlert_list;
 
     public static MeFragment newInstance() {
 
@@ -40,9 +37,6 @@ public class MeFragment extends SupportFragment{
     }
     private void initView(View view) {
         mTvBtnSettings = (TextView) view.findViewById(R.id.tv_btn_settings);
-        mTvBtnSingle_market_alert = (TextView) view.findViewById(R.id.tv_btn_single_market_alert);
-        mTvBtnMarket_spread_alert = (TextView) view.findViewById(R.id.tv_btn_market_spread_alert);
-        mTvBtnAlert_list = (TextView) view.findViewById(R.id.tv_btn_alert_list);
 
 
         mTvBtnSettings.setOnClickListener(new View.OnClickListener() {
@@ -51,24 +45,7 @@ public class MeFragment extends SupportFragment{
                 ((MainFragment) getParentFragment().getParentFragment()).startBrotherFragment(PersonalSettingFragment.newInstance());
             }
         });
-        mTvBtnSingle_market_alert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainFragment) getParentFragment().getParentFragment()).startBrotherFragment(SingleMarketAlertFragment.newInstance());
-            }
-        });
-        mTvBtnMarket_spread_alert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainFragment) getParentFragment().getParentFragment()).startBrotherFragment(MarketSpreadAlertFragment.newInstance());
-            }
-        });
-        mTvBtnAlert_list.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainFragment) getParentFragment().getParentFragment()).startBrotherFragment(AlertListFragment.newInstance());
-            }
-        });
+
     }
 
     @Override

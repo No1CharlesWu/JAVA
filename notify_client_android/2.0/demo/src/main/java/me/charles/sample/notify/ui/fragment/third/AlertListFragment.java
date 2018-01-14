@@ -1,4 +1,4 @@
-package me.charles.sample.notify.ui.fragment.setting;
+package me.charles.sample.notify.ui.fragment.third;
 
 import android.graphics.Rect;
 import android.os.Bundle;

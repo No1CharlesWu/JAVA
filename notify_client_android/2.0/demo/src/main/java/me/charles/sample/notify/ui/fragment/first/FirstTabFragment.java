@@ -19,14 +19,11 @@ import java.util.List;
 
 import me.charles.eventbusactivityscope.EventBusActivityScope;
 import me.charles.sample.R;
+import me.charles.sample.notify.listener.OnItemClickListener;
 import me.charles.sample.notify.adapter.HistoryMsgAdapter;
-import me.charles.sample.notify.adapter.TickerAdapter;
 import me.charles.sample.notify.base.BaseMainFragment;
-import me.charles.sample.notify.entity.Alert;
 import me.charles.sample.notify.entity.HistoryMsg;
-import me.charles.sample.notify.entity.Ticker;
 import me.charles.sample.notify.event.TabSelectedEvent;
-import me.charles.sample.notify.net.TickerTimer;
 import me.charles.sample.notify.ui.fragment.MainFragment;
 import me.charles.sample.notify.net.Interaction;
 
@@ -103,18 +100,18 @@ public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLa
             }
         });
 
-//        mAdapter.setOnItemClickListener(new OnItemClickListener() {
-//            @Override
-//            public void onItemClick(int position, View view, RecyclerView.ViewHolder vh) {
-//                // 因为启动的MsgFragment是MainFragment的兄弟Fragment,所以需要MainFragment.start()
-//
-//                // 也可以像使用getParentFragment()的方式,拿到父Fragment来操作 或者使用 EventBusActivityScope
-//              ((MainFragment) getParentFragment()).startBrotherFragment(MsgFragment.newInstance(mAdapter.getMsg(position)));
-//            }
-//        });
+        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position, View view, RecyclerView.ViewHolder vh) {
+                // 因为启动的MsgFragment是MainFragment的兄弟Fragment,所以需要MainFragment.start()
 
-        List<HistoryMsg> tickerList = initDatas();
-        mAdapter.setDatas(tickerList);
+                // 也可以像使用getParentFragment()的方式,拿到父Fragment来操作 或者使用 EventBusActivityScope
+              ((MainFragment) getParentFragment()).startBrotherFragment(MsgFragment.newInstance(mAdapter.getMsg(position)));
+            }
+        });
+
+        List<HistoryMsg> List = initDatas();
+        mAdapter.setDatas(List);
         mInteraction = new Interaction();
         MainFragment mainFragment = (MainFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MainFragment");
 
@@ -123,21 +120,14 @@ public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLa
     private List<HistoryMsg> initDatas() {
         List<HistoryMsg> msgList = new ArrayList<>();
 
-        String[] name = new String[]{"BitMex永续","BitMexZ17","Bitfinex", "OKCoin", "OKEX", "OKEX本周", "OKEX下周", "OKEX季度"};
-        double[] volume = new double[]{1,2,3,4,5};
-        double[] last = new double[]{1000,2000,3000,4000,5000};
-        double[] low = new double[]{10,20,30,40,50};
-        double[] high = new double[]{100,200,300,400,500};
+        String[] details = new String[]{"1","2","3","4", "5","6"};
+        String[] grade = new String[]{"debug","info","warning", "error", "critical"};
 
-
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 6; i++) {
             int index = (int) (Math.random() * 5);
             HistoryMsg HistoryMsg = new HistoryMsg();
-            HistoryMsg.ticker_name = name[i];
-            HistoryMsg.ticker_volume = volume[index];
-            HistoryMsg.ticker_last = last[index];
-            HistoryMsg.ticker_high = high[index];
-            HistoryMsg.ticker_low = low[index];
+            HistoryMsg.details = details[i];
+            HistoryMsg.grade = grade[index];
             msgList.add(HistoryMsg);
         }
         return msgList;

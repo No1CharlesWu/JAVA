@@ -1,4 +1,4 @@
-package me.charles.sample.notify.ui.fragment.setting;
+package me.charles.sample.notify.ui.fragment.third;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,15 +14,15 @@ import me.charles.sample.notify.base.BaseMainFragment;
  * Created by charles on 2017/11/27 0027.
  */
 
-public class SettingFragment extends BaseMainFragment {
+public class ThirdTabFragment extends BaseMainFragment {
     private Toolbar mToolbar;
     private View mView;
 
-    public static SettingFragment newInstance() {
+    public static ThirdTabFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        SettingFragment fragment = new SettingFragment();
+        ThirdTabFragment fragment = new ThirdTabFragment();
         fragment.setArguments(args);
         return fragment;
     }

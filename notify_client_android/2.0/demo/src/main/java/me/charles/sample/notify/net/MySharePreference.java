@@ -17,21 +17,35 @@ public class MySharePreference {
         this.context = context;
     }
 
-    public void save(int ticker_delay, int alert_delay, int repeat_alert_delay) {
+    public void save(String ip, int port,int info_s,int info_r,int warning_s,int warning_r,int error_s,int error_r, int critical_s, int critical_r) {
         SharedPreferences preferences = context.getSharedPreferences("setting", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("ticker_delay", ticker_delay);
-        editor.putInt("alert_delay", alert_delay);
-        editor.putInt("repeat_alert_delay", repeat_alert_delay);
+        editor.putString("ip", ip);
+        editor.putInt("port", port);
+        editor.putInt("info_s", info_s);
+        editor.putInt("info_r", info_r);
+        editor.putInt("warning_s", warning_s);
+        editor.putInt("warning_r", warning_r);
+        editor.putInt("error_s", error_s);
+        editor.putInt("error_r", error_r);
+        editor.putInt("critical_s", critical_s);
+        editor.putInt("critical_r", critical_r);
         editor.commit();
     }
 
     public Map<String, String> getPreferences(){
         Map<String, String> params = new HashMap<String, String>();
         SharedPreferences preferences = context.getSharedPreferences("setting", Context.MODE_PRIVATE);
-        params.put("ticker_delay", String.valueOf(preferences.getInt("ticker_delay", 5)));
-        params.put("alert_delay", String.valueOf(preferences.getInt("alert_delay", 3)));
-        params.put("repeat_alert_delay", String.valueOf(preferences.getInt("repeat_alert_delay", 300)));
+        params.put("ip",preferences.getString("ip","106.14.193.60"));
+        params.put("port", String.valueOf(preferences.getInt("port", 9999)));
+        params.put("info_s", String.valueOf(preferences.getInt("info_s", 1)));
+        params.put("info_r", String.valueOf(preferences.getInt("info_r", 0)));
+        params.put("warning_s", String.valueOf(preferences.getInt("warning_s", 0)));
+        params.put("warning_r", String.valueOf(preferences.getInt("warning_r", 2)));
+        params.put("error_s", String.valueOf(preferences.getInt("error_s", 1)));
+        params.put("error_r", String.valueOf(preferences.getInt("error_r", 2)));
+        params.put("critical_s", String.valueOf(preferences.getInt("critical_s", 5)));
+        params.put("critical_r", String.valueOf(preferences.getInt("critical_r", 10)));
         return params;
     }
 }
