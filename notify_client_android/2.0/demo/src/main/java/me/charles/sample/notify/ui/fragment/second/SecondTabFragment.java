@@ -1,7 +1,12 @@
 package me.charles.sample.notify.ui.fragment.second;
 
 import android.graphics.Rect;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,9 +18,20 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONObject;
+
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.util.Map;
 
 import me.charles.eventbusactivityscope.EventBusActivityScope;
 import me.charles.sample.R;
@@ -23,24 +39,27 @@ import me.charles.sample.notify.adapter.AlertAdapter;
 import me.charles.sample.notify.base.BaseMainFragment;
 import me.charles.sample.notify.event.TabSelectedEvent;
 import me.charles.sample.notify.listener.OnItemClickListener;
+import me.charles.sample.notify.net.MySharePreference;
 import me.charles.sample.notify.ui.fragment.MainFragment;
 
-/**
- * Created by YoKeyword on 16/6/30.
- */
-public class SecondTabFragment extends BaseMainFragment  implements SwipeRefreshLayout.OnRefreshListener{
+public class SecondTabFragment extends BaseMainFragment {
     private Toolbar mToolbar;
-    private SwipeRefreshLayout mRefreshLayout;
-    private RecyclerView mRecy;
+    private EditText mEditText;
+    private Button mButton;
+    private EditText mKeyword;
 
-    private boolean mInAtTop = true;
-    private int mScrollTotal;
-    private AlertAdapter mAdapter;
+    private Socket socket;
+    private String msg;
+    private int number;
+    private String getMsg;
+
+
+    private MySharePreference service;
+    private Map<String,String> params;
+
 
     public static SecondTabFragment newInstance() {
-
         Bundle args = new Bundle();
-
         SecondTabFragment fragment = new SecondTabFragment();
         fragment.setArguments(args);
         return fragment;
@@ -56,117 +75,79 @@ public class SecondTabFragment extends BaseMainFragment  implements SwipeRefresh
 
     private void initView(View view) {
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
-        mRecy = (RecyclerView) view.findViewById(R.id.recy);
+        mToolbar.setTitle(R.string.send_message);
+        mButton = (Button) view.findViewById(R.id.btn_send);
+        mEditText = (EditText) view.findViewById(R.id.et_send_message);
+        mKeyword = (EditText)view.findViewById(R.id.et_send_keyword);
 
-        EventBusActivityScope.getDefault(_mActivity).register(this);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                msg = mEditText.getText().toString();
+                number = Integer.valueOf(mKeyword.getText().toString());
 
-        mToolbar.setTitle(R.string.alert_list);
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mysocket(number, msg);
+                    }
+                });
+                thread.start();
+
+            }
+        });
+
+        service = new MySharePreference(getContext());
+        params = service.getPreferences();
+
     }
+    private void mysocket(int number, String msg){
+        try {
+            // 创建一个Socket对象，并指定服务端的IP及端口号
+            socket = new Socket(params.get("ip"), Integer.valueOf(params.get("port")));
+            // 获取Socket的OutputStream对象用于发送数据。
+            OutputStream outputStream = socket.getOutputStream();
+
+            //JSON
+            JSONObject jsonObject = new JSONObject();
+            //写入对应属性
+            jsonObject.put("msg", msg);
+            jsonObject.put("keyword", number);
+            System.out.println(jsonObject);
+
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+            writer.write(jsonObject.toString());
+            writer.flush();
+
+            // 创建一个InputStream用户读取要发送的文件。
+            InputStream inputStream = socket.getInputStream();
+            ByteArrayOutputStream out = null;
+            if (inputStream != null) {
+                out = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024 * 4];
+                int len = -1;
+                if ((len = inputStream.read(buffer)) != -1) {
+                    out.write(buffer, 0, len);
+                }
+                byte[] data = out.toByteArray();
+                getMsg = new String(data, "utf-8");
+                System.out.println(getMsg);
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
 
     @Override
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
-        mRefreshLayout.setOnRefreshListener(this);
-
-        mRecy.setLayoutManager(new LinearLayoutManager(_mActivity));
-        mRecy.setHasFixedSize(true);
-        final int space = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0.5f, getResources().getDisplayMetrics());
-        mRecy.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                outRect.set(0, 0, 0, space);
-            }
-        });
-
-        mAdapter = new AlertAdapter(_mActivity);
-        mRecy.setAdapter(mAdapter);
-
-        mRecy.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                mScrollTotal += dy;
-                if (mScrollTotal <= 0) {
-                    mInAtTop = true;
-                } else {
-                    mInAtTop = false;
-                }
-            }
-        });
-
-        mAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(int position, View view, RecyclerView.ViewHolder holder) {
-                showPopMenu(view,position);
-            }
-        });
-    }
-
-    public void showPopMenu(View view,final int pos){
-        PopupMenu popupMenu = new PopupMenu(this.getContext(),view);
-        popupMenu.getMenuInflater().inflate(R.menu.menu_item,popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.openItem:
-                        mAdapter.openItem(pos);
-                        return true;
-                    case R.id.closeItem:
-                        mAdapter.closeItem(pos);
-                        return true;
-                    case R.id.removeItem:
-                        mAdapter.removeItem(pos);
-                        return true;
-                    default:
-                            return false;
-                }
-            }
-        });
-        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-            @Override
-            public void onDismiss(PopupMenu menu) {
-                Toast.makeText(getContext(), "关闭PopupMenu", Toast.LENGTH_SHORT).show();
-            }
-        });
-        popupMenu.show();
-    }
-
-    @Override
-    public void onRefresh() {
-        mRefreshLayout.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //TODO:这里添加更新数据，模拟
-
-                mAdapter.mNotify();
-                mRefreshLayout.setRefreshing(false);
-            }
-        }, 0);
-    }
-
-    /**
-     * Reselected Tab
-     */
-    @Subscribe
-    public void onTabSelectedEvent(TabSelectedEvent event) {
-        if (event.position != MainFragment.SECOND) return;
-
-        if (mInAtTop) {
-            mRefreshLayout.setRefreshing(true);
-            onRefresh();
-        } else {
-            scrollToTop();
-        }
-    }
-
-    private void scrollToTop() {
-        mRecy.smoothScrollToPosition(0);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        EventBusActivityScope.getDefault(_mActivity).unregister(this);
     }
 }
