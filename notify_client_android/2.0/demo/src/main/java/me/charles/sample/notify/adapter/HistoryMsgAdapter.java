@@ -27,16 +27,29 @@ public class HistoryMsgAdapter extends RecyclerView.Adapter<HistoryMsgAdapter.VH
 
     private OnItemClickListener mClickListener;
 
+    public HistoryMsgAdapter(){
+    }
+
     public HistoryMsgAdapter(Context context) {
         service = new MySharePreference(context);
         params = service.getPreferences();
         mInflater = LayoutInflater.from(context);
     }
 
+    public void addData(String details, String grade, long time){
+        HistoryMsg tmp = new HistoryMsg(details, grade, time);
+        System.out.println(details + grade + time);
+        this.addData(tmp);
+    }
+
+    public void addData(HistoryMsg item){
+        mItems.add(0, item);
+    }
+
     public void setDatas(List<HistoryMsg> beans) {
         mItems.clear();
         mItems.addAll(beans);
-        notifyDataSetChanged();
+//        notifyDataSetChanged();
     }
 
     public void mNotify(){

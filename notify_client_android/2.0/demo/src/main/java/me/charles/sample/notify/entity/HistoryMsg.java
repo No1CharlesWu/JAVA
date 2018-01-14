@@ -9,7 +9,14 @@ public class HistoryMsg implements Parcelable {
     public String grade;
     public long time;
 
-    public HistoryMsg() {
+    public HistoryMsg(){
+
+    }
+
+    public HistoryMsg(String details, String grade, long time) {
+        this.details = details;
+        this.grade = grade;
+        this.time = time;
     }
 
 

@@ -111,7 +111,7 @@ public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLa
         });
 
         List<HistoryMsg> List = initDatas();
-        mAdapter.setDatas(List);
+//        mAdapter.setDatas(List);
         mInteraction = new Interaction();
         MainFragment mainFragment = (MainFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MainFragment");
 
@@ -138,9 +138,10 @@ public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLa
         mRefreshLayout.postDelayed(new Runnable() {
             @Override
             public void run() {
+                mAdapter.mNotify();
                 mRefreshLayout.setRefreshing(false);
             }
-        }, 1500);
+        }, 500);
     }
 
 
@@ -156,6 +157,7 @@ public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLa
             mRefreshLayout.setRefreshing(true);
             onRefresh();
         } else {
+            mAdapter.mNotify();
             scrollToTop();
         }
     }

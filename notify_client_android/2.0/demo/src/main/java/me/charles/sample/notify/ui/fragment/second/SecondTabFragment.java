@@ -173,6 +173,10 @@ public class SecondTabFragment extends BaseMainFragment {
             String level = obj.getString("level");
             String msg = obj.getString("msg");
 
+            historyMsgAdapter = new HistoryMsgAdapter();
+            historyMsgAdapter.addData(msg, level, System.currentTimeMillis());
+            historyMsgAdapter.mNotify();
+
             if (level.equals("debug")){
                 debug_alert();
             }else if (level.equals("info")){
