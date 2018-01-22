@@ -19,7 +19,6 @@
 
     <string name="app_name">Notify</string>
 
-    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="home">Home</string>
