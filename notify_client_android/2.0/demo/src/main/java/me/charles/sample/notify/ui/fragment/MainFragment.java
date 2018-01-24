@@ -55,7 +55,7 @@ public class MainFragment extends SupportFragment {
         if (firstFragment == null) {
             mFragments[FIRST] = FirstTabFragment.newInstance();
             mFragments[SECOND] = SecondTabFragment.newInstance();
-            mFragments[THIRD] = PersonalSettingFragment.newInstance();
+            mFragments[THIRD] = ThirdTabFragment.newInstance();
 
             loadMultipleRootFragment(R.id.fl_tab_container, FIRST,
                     mFragments[FIRST],
@@ -67,7 +67,7 @@ public class MainFragment extends SupportFragment {
             // 这里我们需要拿到mFragments的引用
             mFragments[FIRST] = firstFragment;
             mFragments[SECOND] = findChildFragment(SecondTabFragment.class);
-            mFragments[THIRD] = findChildFragment(PersonalSettingFragment.class);
+            mFragments[THIRD] = findChildFragment(ThirdTabFragment.class);
         }
     }
 
@@ -80,20 +80,19 @@ public class MainFragment extends SupportFragment {
                 .addItem(new BottomBarTab(_mActivity, R.drawable.ic_discover_white_24dp, getString(R.string.settings)));
 
         // 模拟未读消息
-        //TODO: 这是只是个模拟，待修改
-        mBottomBar.getItem(FIRST).setUnreadCount(9);
+//        mBottomBar.getItem(FIRST).setUnreadCount(9);
 
         mBottomBar.setOnTabSelectedListener(new BottomBar.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position, int prePosition) {
                 showHideFragment(mFragments[position], mFragments[prePosition]);
-
-                BottomBarTab tab = mBottomBar.getItem(FIRST);
-                if (position == FIRST) {
-                    tab.setUnreadCount(0);
-                } else {
-                    tab.setUnreadCount(tab.getUnreadCount() + 1);
-                }
+//
+//                BottomBarTab tab = mBottomBar.getItem(FIRST);
+//                if (position == FIRST) {
+//                    tab.setUnreadCount(0);
+//                } else {
+//                    tab.setUnreadCount(tab.getUnreadCount() + 1);
+//                }
             }
 
             @Override

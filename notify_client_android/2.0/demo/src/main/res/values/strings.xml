@@ -1,9 +1,4 @@
 <resources>
-    <string name="ticker">ticker</string>
-    <string name="btc">BTC</string>
-    <string name="single_market_alert">single market alert</string>
-    <string name="market_spread_alert">market spread alert</string>
-    <string name="alert_list">alert list</string>
     <string name="list">list</string>
     <string name="personality_setting">personality setting</string>
     <string-array name="web_list">
@@ -195,4 +190,6 @@
     </string-array>
     <string name="message_history">message history</string>
     <string name="send_message">send message</string>
+    <string name="document_location">document location</string>
+    <string name="set_alert">set alert</string>
 </resources>
