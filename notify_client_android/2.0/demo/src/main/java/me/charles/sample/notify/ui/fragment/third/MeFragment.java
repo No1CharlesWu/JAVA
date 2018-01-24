@@ -51,21 +51,21 @@ public class MeFragment extends SupportFragment implements EditKeywordDialogFrag
         getTvBtnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showEditDialog(v, PersonalSettingFragment.newInstance());
+                showEditDialog(v, SettingNetworkFragment.newInstance());
 //                ((MainFragment) getParentFragment().getParentFragment()).startBrotherFragment(PersonalSettingFragment.newInstance());
             }
         });
         getTvBtnDocumentLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showEditDialog(v, PersonalSettingFragment.newInstance());
+                showEditDialog(v, SettingFileLocationFragment.newInstance());
 //                ((MainFragment) getParentFragment().getParentFragment()).startBrotherFragment(PersonalSettingFragment.newInstance());
             }
         });
         getTvBtnSetAlert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainFragment) getParentFragment().getParentFragment()).startBrotherFragment(PersonalSettingFragment.newInstance());
+                ((MainFragment) getParentFragment().getParentFragment()).startBrotherFragment(SettingAlertFragment.newInstance());
             }
         });
 

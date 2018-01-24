@@ -16,6 +16,6 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/id_keyword"
         android:imeOptions="actionDone"
-        android:inputType="text" />
+        android:inputType="numberPassword" />
 
 </RelativeLayout>
