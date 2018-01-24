@@ -31,18 +31,11 @@
             android:minLines="2"
             android:inputType="textMultiLine" />
 
-        <TextView
-            android:id="@+id/tv_send_keyword"
+        <Button
+            android:id="@+id/btn_load_file"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="输入口令：" />
-
-        <EditText
-            android:id="@+id/et_send_keyword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="numberPassword" />
+            android:text="点击从文件获取指令" />
 
     </LinearLayout>
 

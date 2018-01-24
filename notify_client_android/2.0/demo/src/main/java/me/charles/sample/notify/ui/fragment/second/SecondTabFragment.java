@@ -1,7 +1,6 @@
 package me.charles.sample.notify.ui.fragment.second;
 
 import android.app.Service;
-import android.graphics.Rect;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -10,59 +9,51 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Map;
 
-import me.charles.eventbusactivityscope.EventBusActivityScope;
+import me.charles.fragmentation.SupportFragment;
 import me.charles.sample.R;
-import me.charles.sample.notify.adapter.AlertAdapter;
 import me.charles.sample.notify.adapter.HistoryMsgAdapter;
 import me.charles.sample.notify.base.BaseMainFragment;
-import me.charles.sample.notify.entity.HistoryMsg;
-import me.charles.sample.notify.event.TabSelectedEvent;
-import me.charles.sample.notify.listener.OnItemClickListener;
 import me.charles.sample.notify.net.MySharePreference;
-import me.charles.sample.notify.ui.fragment.MainFragment;
+import me.charles.sample.notify.ui.fragment.EditKeywordDialogFragment;
 
-public class SecondTabFragment extends BaseMainFragment {
+public class SecondTabFragment extends BaseMainFragment implements EditKeywordDialogFragment.KeywordInputListener{
     private Toolbar mToolbar;
     private EditText mEditText;
+    private Button mLoadFile;
     private Button mButton;
-    private EditText mKeyword;
     private Vibrator vibrator;
 
     private Socket socket;
     private String msg;
-    private int number;
     private String getMsg;
 
+    private static int KEYWORD = 6666;
 
     private MySharePreference service;
     private Map<String,String> params;
-
-    private HistoryMsgAdapter historyMsgAdapter;
 
     public static SecondTabFragment newInstance() {
         Bundle args = new Bundle();
@@ -82,38 +73,56 @@ public class SecondTabFragment extends BaseMainFragment {
     private void initView(View view) {
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         mToolbar.setTitle(R.string.send_message);
+        mLoadFile = (Button) view.findViewById(R.id.btn_load_file);
         mButton = (Button) view.findViewById(R.id.btn_send);
         mEditText = (EditText) view.findViewById(R.id.et_send_message);
-        mKeyword = (EditText)view.findViewById(R.id.et_send_keyword);
         vibrator = (Vibrator) getContext().getSystemService(Service.VIBRATOR_SERVICE);
-
-
-
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                msg = mEditText.getText().toString();
-                number = Integer.valueOf(mKeyword.getText().toString());
-
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mysocket(number, msg);
-
-                        Message message=new Message();
-                        message.what=1;
-                        mHandler.sendMessage(message);
-                    }
-                });
-                thread.start();
-
-            }
-        });
 
         service = new MySharePreference(getContext());
         params = service.getPreferences();
 
+        mLoadFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                params = service.getPreferences();
+                mEditText.setText(readFileSdcardFile(params.get("location")));
+                Toast.makeText(getContext(), readFileSdcardFile(params.get("location")) ,Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEditDialog();
+            }
+        });
     }
+
+    public String readFileSdcardFile(String fileName){
+        FileInputStream in;
+        BufferedReader reader = null;
+        StringBuilder content = new StringBuilder();
+        try {
+            in = new FileInputStream(fileName);
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return content.toString();
+    }
+
     private void mysocket(int number, String msg){
         try {
             // 创建一个Socket对象，并指定服务端的IP及端口号
@@ -134,11 +143,11 @@ public class SecondTabFragment extends BaseMainFragment {
 
             // 创建一个InputStream用户读取要发送的文件。
             InputStream inputStream = socket.getInputStream();
-            ByteArrayOutputStream out = null;
+            ByteArrayOutputStream out;
             if (inputStream != null) {
                 out = new ByteArrayOutputStream();
                 byte[] buffer = new byte[1024 * 4];
-                int len = -1;
+                int len;
                 if ((len = inputStream.read(buffer)) != -1) {
                     out.write(buffer, 0, len);
                 }
@@ -151,6 +160,7 @@ public class SecondTabFragment extends BaseMainFragment {
             e.printStackTrace();
         }
     }
+
     public Handler mHandler=new Handler()
     {
         public void handleMessage(Message msg)
@@ -173,22 +183,29 @@ public class SecondTabFragment extends BaseMainFragment {
             String level = obj.getString("level");
             String msg = obj.getString("msg");
 
-            historyMsgAdapter = new HistoryMsgAdapter();
+            HistoryMsgAdapter historyMsgAdapter = new HistoryMsgAdapter();
             historyMsgAdapter.addData(msg, level, System.currentTimeMillis());
             historyMsgAdapter.mNotify();
 
-            if (level.equals("debug")){
-                debug_alert();
-            }else if (level.equals("info")){
-                info_alert();
-            }else if (level.equals("warning")){
-                warning_alert();
-            }else if (level.equals("error")){
-                error_alert();
-            }else if (level.equals("critical")){
-                critical_alert();
-            }else {
-                Toast.makeText(getContext(), "nothing", Toast.LENGTH_SHORT).show();
+            switch (level) {
+                case "debug":
+                    debug_alert();
+                    break;
+                case "info":
+                    info_alert();
+                    break;
+                case "warning":
+                    warning_alert();
+                    break;
+                case "error":
+                    error_alert();
+                    break;
+                case "critical":
+                    critical_alert();
+                    break;
+                default:
+                    Toast.makeText(getContext(), "nothing", Toast.LENGTH_SHORT).show();
+                    break;
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -260,8 +277,6 @@ public class SecondTabFragment extends BaseMainFragment {
         Toast.makeText(getContext(), "critical", Toast.LENGTH_SHORT).show();
     }
 
-
-
     @Override
     public void onLazyInitView(@Nullable Bundle savedInstanceState) {
         super.onLazyInitView(savedInstanceState);
@@ -271,4 +286,40 @@ public class SecondTabFragment extends BaseMainFragment {
     public void onDestroyView() {
         super.onDestroyView();
     }
+
+    public void showEditDialog()
+    {
+        FragmentManager fm = getFragmentManager();
+        EditKeywordDialogFragment editNameDialogFragment = EditKeywordDialogFragment.newInstance(null);
+        // SETS the target fragment for use later when sending results
+        editNameDialogFragment.setTargetFragment(SecondTabFragment.this, 300);
+        editNameDialogFragment.show(fm, "fragment_edit_keyword");
+    }
+
+    @Override
+    public void onKeywordInputComplete(int keyword, SupportFragment fragment)
+    {
+        if (keyword == KEYWORD){
+            try {
+                msg = mEditText.getText().toString();
+
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mysocket(KEYWORD, msg);
+
+                        Message message=new Message();
+                        message.what=1;
+                        mHandler.sendMessage(message);
+                    }
+                });
+                thread.start();
+            }catch (Exception e){
+                Toast.makeText(getContext(), e.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }else {
+        }
+        Toast.makeText(getContext(),"send"+ keyword,Toast.LENGTH_SHORT).show();
+    }
+
 }

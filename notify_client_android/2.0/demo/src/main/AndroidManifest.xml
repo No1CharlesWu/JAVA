@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="me.charles.sample"
           xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.VIBRATE" />
+
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <!--允许应用程序改变网络状态-->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
@@ -21,6 +20,8 @@
 
     <!--允许应用程序使用震动-->
     <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name="me.charles.sample.App"

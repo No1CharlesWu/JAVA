@@ -96,37 +96,16 @@ public class SettingFileLocationFragment extends BaseBackFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK&&requestCode==FILE_SELECT_CODE){
-            Uri uri = data.getData();//得到uri，后面就是将uri转化成file的过程。
-            String string =uri.toString();
-            File file;
-            String a[]=new String[2];
-            //判断文件是否在sd卡中
-            if (string.indexOf(String.valueOf(Environment.getExternalStorageDirectory()))!=-1){
-                //对Uri进行切割
-                a = string.split(String.valueOf(Environment.getExternalStorageDirectory()));
-                //获取到file
-                file = new File(Environment.getExternalStorageDirectory(),a[1]);
-
-                location.setText(string);
-                Toast.makeText(getContext(),a[1],Toast.LENGTH_SHORT).show();
-
-            }else if(string.indexOf(String.valueOf(Environment.getDataDirectory()))!=-1){ //判断文件是否在手机内存中
-                //对Uri进行切割
-                a =string.split(String.valueOf(Environment.getDataDirectory()));
-                //获取到file
-                file = new File(Environment.getDataDirectory(),a[1]);
-
-                location.setText(string);
-
-                Toast.makeText(getContext(),a[1],Toast.LENGTH_SHORT).show();
-
-            }else{
-                //出现其他没有考虑到的情况
-                Toast.makeText(getContext(),"文件路径解析失败！",Toast.LENGTH_SHORT).show();
-                return;
+        try {
+            if (resultCode == Activity.RESULT_OK&&requestCode==FILE_SELECT_CODE){
+                Uri uri = data.getData();
+                location.setText(uri != null ? uri.getPath() : "");
+                Toast.makeText(getContext(), uri != null ? uri.getPath() : "",Toast.LENGTH_SHORT).show();
             }
+        }catch (Exception e){
+            Toast.makeText(getContext(),e.toString(),Toast.LENGTH_SHORT).show();
         }
+
     }
 
     public void save(View v){
