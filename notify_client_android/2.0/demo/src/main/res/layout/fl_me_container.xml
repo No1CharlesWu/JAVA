@@ -23,7 +23,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="@string/settings"
+            android:text="@string/set_network"
             android:textSize="16sp" />
         <TextView
             android:id="@+id/tv_btn_document_location"

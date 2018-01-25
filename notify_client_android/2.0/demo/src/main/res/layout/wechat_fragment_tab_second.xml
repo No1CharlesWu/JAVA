@@ -29,6 +29,7 @@
             android:layout_height="match_parent"
             android:ems="10"
             android:minLines="2"
+            android:maxLines="15"
             android:inputType="textMultiLine" />
 
         <Button

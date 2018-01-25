@@ -199,4 +199,5 @@
     <string name="send_message">发送消息</string>
     <string name="document_location">文件位置</string>
     <string name="set_alert">设置自定义提示</string>
+    <string name="set_network">设置网络</string>
 </resources>

@@ -1,7 +1,5 @@
 ReadMe
 
-代码托管：https://github.com/No1CharlesWu/notify
-
 1. 软件定位：移动APP接收远程服务器端的错误信息提示，并对远程服务器端进行命令控制。
 
 2. 技术要求：
