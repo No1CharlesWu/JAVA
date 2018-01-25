@@ -3,14 +3,19 @@ package me.charles.sample.notify.ui.fragment.first;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -18,19 +23,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.charles.eventbusactivityscope.EventBusActivityScope;
+import me.charles.fragmentation.SupportFragment;
 import me.charles.sample.R;
 import me.charles.sample.notify.listener.OnItemClickListener;
 import me.charles.sample.notify.adapter.HistoryMsgAdapter;
 import me.charles.sample.notify.base.BaseMainFragment;
 import me.charles.sample.notify.entity.HistoryMsg;
 import me.charles.sample.notify.event.TabSelectedEvent;
+import me.charles.sample.notify.ui.fragment.EditKeywordDialogFragment;
 import me.charles.sample.notify.ui.fragment.MainFragment;
 import me.charles.sample.notify.net.Interaction;
+import me.charles.sample.notify.ui.fragment.second.SecondTabFragment;
 
 /**
  * Created by YoKeyword on 16/6/30.
  */
-public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLayout.OnRefreshListener, Toolbar.OnMenuItemClickListener, EditKeywordDialogFragment.KeywordInputListener {
     private Toolbar mToolbar;
     private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mRecy;
@@ -41,6 +49,8 @@ public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLa
     private HistoryMsgAdapter mAdapter;
 
     private Interaction mInteraction;
+
+    private static int KEYWORD = 6666;
 
     public static FirstTabFragment newInstance() {
 
@@ -67,6 +77,8 @@ public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLa
         EventBusActivityScope.getDefault(_mActivity).register(this);
 
         mToolbar.setTitle(R.string.message_history);
+        mToolbar.inflateMenu(R.menu.home);
+        mToolbar.setOnMenuItemClickListener(this);
     }
 
     @Override
@@ -111,7 +123,7 @@ public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLa
         });
 
         List<HistoryMsg> List = initDatas();
-//        mAdapter.setDatas(List);
+        mAdapter.setDatas(List);
         mInteraction = new Interaction();
         MainFragment mainFragment = (MainFragment) getActivity().getSupportFragmentManager().findFragmentByTag("MainFragment");
 
@@ -144,8 +156,6 @@ public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLa
         }, 500);
     }
 
-
-
     /**
      * Reselected Tab
      */
@@ -170,5 +180,50 @@ public class FirstTabFragment extends BaseMainFragment implements SwipeRefreshLa
     public void onDestroyView() {
         super.onDestroyView();
         EventBusActivityScope.getDefault(_mActivity).unregister(this);
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_anim:
+                final PopupMenu popupMenu = new PopupMenu(_mActivity, mToolbar, GravityCompat.END);
+                popupMenu.inflate(R.menu.home_pop);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.clearAll:
+                                showEditDialog();
+                                Toast.makeText(_mActivity, R.string.clearAll, Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                        popupMenu.dismiss();
+                        return true;
+                    }
+                });
+                popupMenu.show();
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onKeywordInputComplete(int keyword, SupportFragment fragment) {
+        if (keyword == KEYWORD){
+            mAdapter.clearAllDatas();
+        }else {
+        }
+        Toast.makeText(getContext(),"get"+ keyword,Toast.LENGTH_SHORT).show();
+
+    }
+
+
+    public void showEditDialog()
+    {
+        FragmentManager fm = getFragmentManager();
+        EditKeywordDialogFragment editNameDialogFragment = EditKeywordDialogFragment.newInstance(null);
+        // SETS the target fragment for use later when sending results
+        editNameDialogFragment.setTargetFragment(FirstTabFragment.this, 300);
+        editNameDialogFragment.show(fm, "fragment_edit_keyword");
     }
 }

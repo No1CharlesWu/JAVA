@@ -2,15 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_anim_veritical"
-        android:title="@string/action_anim_v"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_anim_horizontal"
-        android:title="@string/anim_h"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_anim_none"
-        android:title="@string/anim_none"
+        android:id="@+id/clearAll"
+        android:title="@string/clearAll"
         app:showAsAction="never"/>
 </menu>

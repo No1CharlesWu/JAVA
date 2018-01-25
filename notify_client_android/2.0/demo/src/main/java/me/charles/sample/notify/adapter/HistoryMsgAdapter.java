@@ -46,6 +46,11 @@ public class HistoryMsgAdapter extends RecyclerView.Adapter<HistoryMsgAdapter.VH
         mItems.add(0, item);
     }
 
+    public void clearAllDatas(){
+        mItems.clear();
+        notifyDataSetChanged();
+    }
+
     public void setDatas(List<HistoryMsg> beans) {
         mItems.clear();
         mItems.addAll(beans);

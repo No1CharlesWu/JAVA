@@ -200,4 +200,6 @@
     <string name="document_location">文件位置</string>
     <string name="set_alert">设置自定义提示</string>
     <string name="set_network">设置网络</string>
+    <string name="clearAll">清空历史信息</string>
+    <string name="menu">菜单</string>
 </resources>

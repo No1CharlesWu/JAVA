@@ -321,5 +321,4 @@ public class SecondTabFragment extends BaseMainFragment implements EditKeywordDi
         }
         Toast.makeText(getContext(),"send"+ keyword,Toast.LENGTH_SHORT).show();
     }
-
 }

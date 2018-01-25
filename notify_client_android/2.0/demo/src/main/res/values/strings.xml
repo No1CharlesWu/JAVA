@@ -193,4 +193,6 @@
     <string name="document_location">document location</string>
     <string name="set_alert">set alert</string>
     <string name="set_network">set network</string>
+    <string name="clearAll">clear all</string>
+    <string name="menu">menu</string>
 </resources>
